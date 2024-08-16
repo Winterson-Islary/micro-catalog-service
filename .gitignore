@@ -74,12 +74,12 @@ web_modules/
 
 # dotenv environment variable files
 .env
-.env.development.local
+.env.dev.local
 .env.test.local
-.env.production.local
+.env.prod.local
 .env.local
-.env.production
-.env.development
+.env.prod
+.env.dev
 .env.test
 # keys
 certs/
