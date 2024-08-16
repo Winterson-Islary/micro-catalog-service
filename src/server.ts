@@ -1,4 +1,3 @@
-function sum(a: number, b: number) {
-	return a + b;
-}
-sum(2, 4);
+import logger from "./configs/logger";
+
+logger.info("HELLO WORLD");
