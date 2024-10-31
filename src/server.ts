@@ -1,3 +1,11 @@
-import logger from "./config/logger";
+import config from "config";
+import app from "./app";
 
-logger.info("Hello From Catalog Service");
+function Server() {
+	const PORT: number = config.get("server.port") || 5502;
+	try {
+		app.listen(PORT, () => console.log("SERVER ACTIVE"));
+	} catch (err) {}
+}
+
+Server();

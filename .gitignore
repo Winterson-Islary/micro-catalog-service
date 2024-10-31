@@ -81,6 +81,9 @@ web_modules/
 .env.prod
 .env.dev
 .env.test
+#file-based config folder
+/config
+
 # keys
 certs/
 public/
