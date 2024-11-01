@@ -1,15 +1,10 @@
 import config from "config";
-import type { NextFunction, Request, Response } from "express";
+import type { Request, Response } from "express";
 import type { HttpError } from "http-errors";
 import { v4 as uuidv4 } from "uuid";
-import logger from "../config/logger";
+import logger from "../../config/logger";
 
-function globalErrorHandler(
-	err: HttpError,
-	req: Request,
-	res: Response,
-	next: NextFunction,
-) {
+function globalErrorHandler(err: HttpError, req: Request, res: Response) {
 	const errorId = uuidv4();
 	const statusCode = err.status || 500;
 	const isProduction = config.get("server.env") === "production";
