@@ -3,15 +3,15 @@ version: '0.1.0'
 services:
   database:
     container_name: catalog_db
-    image: postgres
+    image: mongo:latest
     environment:
-      - POSTGRES_DB=${DB_NAME}
-      - POSTGRES_PASSWORD=${DB_PASSWORD}
-      - POSTGRES_USER=${DB_USERNAME}
+      - MONGO_INITDB_ROOT_USERNAME=${DB_USERNAME}
+      - MONGO_INITDB_ROOT_PASSWORD=${DB_PASSWORD}
+      - MONGO_INITDB_DATABASE=${DB_NAME}
     ports:
       - '${DB_PORT}:${DB_PORT}'
     volumes:
-      - pgCatalogData:/var/lib/postgresql/data
+      - mongoCatalogData:/var/lib/mongodb/data
 
-  volumes:
-    pgCatalogData:
+volumes:
+  mongoCatalogData:
