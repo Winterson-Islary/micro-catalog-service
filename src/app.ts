@@ -10,14 +10,10 @@ const app = express();
 app.use(cookieParser());
 app.use(express.json());
 
-app.use("/category", CategoryRouter);
 app.get("/", (req: Request, res: Response) => {
 	res.json({ message: `listening on port: ${config.get("server.port")}` });
 });
-
-app.get("/protected", authenticate, (req: Request, res: Response) => {
-	res.json({ message: "i am authenticated" });
-});
+app.use("/categories", CategoryRouter);
 
 app.use(globalErrorHandler);
 

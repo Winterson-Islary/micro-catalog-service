@@ -1,5 +1,6 @@
 import type { NextFunction, Request, Response } from "express";
 import createHttpError from "http-errors";
+import type { Types } from "mongoose";
 import type { Logger } from "winston";
 import type { CategoryTypes, TCategoryService } from "./types";
 
@@ -17,7 +18,9 @@ export class CategoryController {
 				),
 			);
 		}
-		this.categoryService.create(req.body.categoryInput);
-		res.json({});
+		const serviceResponse: Types.ObjectId =
+			await this.categoryService.create(req.body.categoryInput);
+		this.logger.info("Created Category: ", { id: serviceResponse._id });
+		res.status(201).json({ id: serviceResponse._id });
 	}
 }

@@ -1,3 +1,4 @@
+import type { Types } from "mongoose";
 import { z } from "zod";
 
 //! uses = [category-validator]
@@ -11,16 +12,18 @@ export const CategoryValidatorSchema = z.object({
 			availableOptions: z.array(z.string()),
 		}),
 	),
-	attributes: z.object({
-		name: z.string(),
-		widgetType: z.enum(ValidWidgetType),
-		defaultValue: z.any(),
-		availableOptions: z.array(z.string()),
-	}),
+	attributes: z.array(
+		z.object({
+			name: z.string(),
+			widgetType: z.enum(ValidWidgetType),
+			defaultValue: z.any(),
+			availableOptions: z.array(z.string()),
+		}),
+	),
 });
 export type CategoryTypes = z.infer<typeof CategoryValidatorSchema>;
 
 //! uses = [category-services]
 export interface TCategoryService {
-	create(category: CategoryTypes): Promise<void>;
+	create(category: CategoryTypes): Promise<Types.ObjectId>;
 }
