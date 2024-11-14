@@ -8,7 +8,9 @@ export class CategoryController {
 	constructor(
 		private categoryService: TCategoryService,
 		private logger: Logger,
-	) {}
+	) {
+		this.create = this.create.bind(this);
+	}
 	async create(req: Request, res: Response, next: NextFunction) {
 		if (!req.body.categoryInput) {
 			return next(
