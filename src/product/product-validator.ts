@@ -11,6 +11,7 @@ export const ProductValidator = async (
 	try {
 		const parsedName = req.body.name || undefined;
 		const parsedDesc = req.body.description || undefined;
+		const parsedImage = req.body.image || undefined;
 		const parsedProductId = req.body.productId || undefined;
 		const parsedTenantId = req.body.tenantId || undefined;
 		const isPublished = req.body.isPublished;
@@ -20,7 +21,7 @@ export const ProductValidator = async (
 		const tempData: ProductTypes = {
 			name: parsedName,
 			description: parsedDesc,
-			image: "",
+			image: parsedImage,
 			priceConfiguration: parsedPriceConfiguration,
 			attributes: parsedAttributes,
 			productId: parsedProductId,
@@ -39,3 +40,5 @@ export const ProductValidator = async (
 		next(createHttpError(400, "failed to parse product input"));
 	}
 };
+
+//! TEST IT
