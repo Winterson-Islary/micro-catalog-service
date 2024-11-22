@@ -7,7 +7,7 @@ import {
 	type CategoryTypes,
 	CategoryValidatorSchema,
 	PartialCategoryValidatorSchema,
-} from "./types";
+} from "./category-types";
 
 export const CategoryValidator = async (
 	req: Request,

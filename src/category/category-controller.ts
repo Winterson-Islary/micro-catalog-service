@@ -2,7 +2,7 @@ import type { NextFunction, Request, Response } from "express";
 import createHttpError from "http-errors";
 import { Types } from "mongoose";
 import type { Logger } from "winston";
-import type { CategoryTypes, TCategoryService } from "./types";
+import type { CategoryTypes, TCategoryService } from "./category-types";
 
 export class CategoryController {
 	constructor(

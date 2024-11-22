@@ -1,7 +1,7 @@
 import type { Types } from "mongoose";
 import type { Logger } from "winston";
 import CategoryModel from "./category-model";
-import type { CategoryTypes, TCategoryService } from "./types";
+import type { CategoryTypes, TCategoryService } from "./category-types";
 
 export class CategoryService implements TCategoryService {
 	constructor(private logger: Logger) {}
