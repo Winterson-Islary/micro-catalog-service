@@ -10,6 +10,7 @@ export const logger = winston.createLogger({
 			format: winston.format.combine(
 				winston.format.timestamp(),
 				winston.format.json(),
+				winston.format.prettyPrint(),
 			),
 		}),
 		// new winston.transports.File({ filename: "error.log", level: "error" }),

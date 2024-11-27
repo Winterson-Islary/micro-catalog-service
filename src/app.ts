@@ -2,6 +2,7 @@ import config from "config";
 import cookieParser from "cookie-parser";
 import cors from "cors";
 import express, { type Request, type Response } from "express";
+import fileUpload from "express-fileupload";
 import CategoryRouter from "./category/category-router";
 import authenticate from "./common/middleware/authenticate";
 import globalErrorHandler from "./common/middleware/globalErrorHandler";
@@ -9,6 +10,7 @@ import ProductRouter from "./product/product-router";
 
 const app = express();
 app.use(cookieParser());
+app.use(fileUpload());
 app.use(express.json());
 
 app.get("/", (req: Request, res: Response) => {

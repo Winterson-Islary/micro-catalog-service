@@ -1,6 +1,7 @@
 import type { NextFunction, Request, Response } from "express";
 import createHttpError from "http-errors";
 import { ZodError } from "zod";
+import logger from "../config/logger";
 import { type ProductTypes, ProductValidatorSchema } from "./product-types";
 
 export const ProductValidator = async (
@@ -14,10 +15,11 @@ export const ProductValidator = async (
 		const parsedImage = req.body.image || undefined;
 		const parsedProductId = req.body.productId || undefined;
 		const parsedTenantId = req.body.tenantId || undefined;
-		const isPublished = req.body.isPublished;
+		const isPublished = Boolean(req.body.isPublished);
 		const parsedPriceConfiguration =
-			req.body.priceConfiguration || undefined;
-		const parsedAttributes = req.body.attributes || undefined;
+			JSON.parse(req.body.priceConfiguration as string) || undefined;
+		const parsedAttributes =
+			JSON.parse(req.body.attributes as string) || undefined;
 		const tempData: ProductTypes = {
 			name: parsedName,
 			description: parsedDesc,
@@ -28,16 +30,22 @@ export const ProductValidator = async (
 			tenantId: parsedTenantId,
 			isPublished: isPublished,
 		};
+		logger.info(
+			`PRICE_CONFIGURATION: ${JSON.stringify(parsedPriceConfiguration)}`,
+		);
+		logger.info(`ATTRIBUTES: ${JSON.stringify(parsedAttributes)}`);
 		const productInput = await ProductValidatorSchema.parseAsync(tempData);
 		req.body.productInput = productInput;
 		return next();
 	} catch (error: unknown) {
 		if (error instanceof ZodError) {
-			next(createHttpError(400, error.issues));
-		} else if (error instanceof Error) {
-			next(createHttpError(400, error.message));
+			logger.info(`Zod Issues: ${JSON.stringify(error.issues)}`);
+			return next(createHttpError(400, error.issues));
 		}
-		next(createHttpError(400, "failed to parse product input"));
+		if (error instanceof Error) {
+			return next(createHttpError(400, error.message));
+		}
+		return next(createHttpError(400, "failed to parse product input"));
 	}
 };
 

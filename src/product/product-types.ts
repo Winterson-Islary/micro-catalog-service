@@ -1,7 +1,7 @@
 import { z } from "zod";
 
 export interface ProductService {
-	create(): Promise<void>;
+	create(product: ProductTypes): Promise<void>;
 }
 const validPriceType = ["base", "additional"] as const;
 export const ProductValidatorSchema = z.object({
@@ -11,7 +11,7 @@ export const ProductValidatorSchema = z.object({
 	priceConfiguration: z.record(
 		z.object({
 			priceType: z.enum(validPriceType),
-			availableOptions: z.array(z.string()),
+			availableOptions: z.record(z.number()),
 		}),
 	),
 	attributes: z.array(
