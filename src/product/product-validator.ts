@@ -12,7 +12,7 @@ export const ProductValidator = async (
 	try {
 		const parsedName = req.body.name || undefined;
 		const parsedDesc = req.body.description || undefined;
-		const parsedImage = req.body.image || undefined;
+		const parsedImage = req.files?.image || undefined;
 		const parsedProductId = req.body.productId || undefined;
 		const parsedTenantId = req.body.tenantId || undefined;
 		const isPublished = Boolean(req.body.isPublished);
@@ -20,10 +20,12 @@ export const ProductValidator = async (
 			JSON.parse(req.body.priceConfiguration as string) || undefined;
 		const parsedAttributes =
 			JSON.parse(req.body.attributes as string) || undefined;
+		if (!parsedImage) {
+			throw new Error("Please upload a valid image.");
+		}
 		const tempData: ProductTypes = {
 			name: parsedName,
 			description: parsedDesc,
-			image: parsedImage,
 			priceConfiguration: parsedPriceConfiguration,
 			attributes: parsedAttributes,
 			productId: parsedProductId,
