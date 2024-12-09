@@ -10,7 +10,12 @@ import ProductRouter from "./product/product-router";
 
 const app = express();
 app.use(cookieParser());
-app.use(fileUpload());
+app.use(
+	fileUpload({
+		limits: { fileSize: 500 * 1024 },
+		abortOnLimit: true,
+	}),
+);
 app.use(express.json());
 
 app.get("/", (req: Request, res: Response) => {

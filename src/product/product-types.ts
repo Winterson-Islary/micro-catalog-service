@@ -35,7 +35,7 @@ export const ProductValidatorSchema = z.object({
 export const ProductStorageSchema = z.object({
 	name: z.string(),
 	description: z.string().max(300),
-	imageId: z.string(),
+	image: z.string(),
 	priceConfiguration: z.record(
 		z.object({
 			priceType: z.enum(validPriceType),

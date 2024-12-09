@@ -17,17 +17,6 @@ const productController = new ProductController(
 	cloudinaryService,
 );
 
-router.post(
-	"/",
-	fileUpload({
-		limits: { fileSize: 500 * 1024 },
-		abortOnLimit: true,
-		limitHandler: (req, res, next) => {
-			return next(createHttpError(400, "File size exceeds the limit"));
-		},
-	}),
-	ProductValidator,
-	asyncWrapper(productController.create),
-);
+router.post("/", ProductValidator, asyncWrapper(productController.create));
 
 export default router;

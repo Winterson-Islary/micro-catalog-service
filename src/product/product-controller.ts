@@ -26,7 +26,7 @@ export class ProductController {
 			});
 			await this.productService.create({
 				name: productInput.name,
-				imageId: fileName,
+				image: fileName,
 				description: productInput.description,
 				priceConfiguration: productInput.priceConfiguration,
 				attributes: productInput.attributes,
