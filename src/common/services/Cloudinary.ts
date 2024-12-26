@@ -43,14 +43,46 @@ export class CloudinaryStorage implements FileStorage {
 			);
 			return { public_id: uploadResult.public_id, url: uploadResult.url };
 		} catch (error) {
-			this.logger.error(`error: ${error}; Location: 'Cloudinary.ts'`);
+			this.logger.error(`error: ${error}; location: 'Cloudinary.ts'`);
 			throw new Error(
 				"{message: 'Failed to upload image'; location: 'Cloudinary.ts'}",
 			);
 		}
 	}
-	async delete(filename: string): Promise<void> {}
-	async getObjectUrl(filename: string): Promise<string> {
+	async delete(filename: string): Promise<void> {
+		try {
+			await new Promise<void>((resolve, reject) => {
+				cloudinary.uploader.destroy(
+					`pizza-corp-uploads/${filename}`,
+					{
+						resource_type: "image",
+					},
+					(error, result) => {
+						if (error) {
+							reject(error);
+						} else if (result.result === "ok") {
+							resolve();
+						} else {
+							reject(
+								new Error(
+									`Unexpected result: ${result.result}`,
+								),
+							);
+						}
+					},
+				);
+			});
+			this.logger.info(
+				`Image with public_id ${filename} deleted successfully`,
+			);
+		} catch (error) {
+			this.logger.error(`error: ${error}; location: 'Cloudinary.ts'`);
+			throw new Error(
+				"{message: 'Failed to delete image'; location: 'Cloudinary.ts'}",
+			);
+		}
+	}
+	async getObjectUrl(_filename: string): Promise<string> {
 		return "";
 	}
 }
