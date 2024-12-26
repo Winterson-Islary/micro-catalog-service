@@ -5,7 +5,11 @@ import { v4 as uuid } from "uuid";
 import type { Logger } from "winston";
 import { z } from "zod";
 import type { FileStorage, TUploadReturn } from "../common/types/buckets";
-import type { ProductService, ProductTypes } from "./product-types";
+import type {
+	ProductService,
+	ProductTypes,
+	UpdateProductRT,
+} from "./product-types";
 
 export class ProductController {
 	constructor(
@@ -14,8 +18,9 @@ export class ProductController {
 		private Storage: FileStorage,
 	) {
 		this.create = this.create.bind(this);
+		this.update = this.update.bind(this);
 	}
-	async create(req: Request, res: Response, next: NextFunction) {
+	async create(req: Request, res: Response, _next: NextFunction) {
 		try {
 			const { productInput }: { productInput: ProductTypes } = req.body;
 			const fileName = uuid();
@@ -37,6 +42,63 @@ export class ProductController {
 			res.status(201).json({
 				message: "product created successfully",
 				imgURL: uploadReturn.url,
+			});
+		} catch (error) {
+			this.logger.error(
+				`{error: ${error}}, location: 'product-controller'`,
+			);
+			throw error;
+		}
+	}
+
+	async update(req: Request, res: Response, _next: NextFunction) {
+		try {
+			const {
+				image,
+				productId,
+				name,
+				description,
+				priceConfiguration,
+				attributes,
+				tenantId,
+				isPublished,
+			} = req.body.productInput;
+			let newImageName: string | undefined;
+			const newImage = image as UploadedFile;
+			if (newImage) {
+				const oldImage =
+					await this.productService.getProductImage(productId);
+				newImageName = uuid();
+				await this.Storage.upload({
+					fileName: newImageName,
+					fileData: newImage.data.buffer,
+				});
+				if (oldImage) {
+					await this.Storage.delete(oldImage);
+				}
+			} else {
+				newImageName =
+					await this.productService.getProductImage(productId);
+			}
+
+			if (!productId) {
+				throw new Error("missing product id");
+			}
+			const updatedProduct: UpdateProductRT | undefined =
+				await this.productService.update({
+					productId,
+					image: newImageName,
+					name,
+					description,
+					priceConfiguration,
+					attributes,
+					tenantId,
+					isPublished,
+				});
+
+			res.status(201).json({
+				id: updatedProduct?._id,
+				message: "product updated successfully",
 			});
 		} catch (error) {
 			this.logger.error(

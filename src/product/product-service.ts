@@ -1,8 +1,13 @@
 import type { Logger } from "winston";
 import productModel from "./product-model";
-import type { ProductStorageType } from "./product-types";
+import type {
+	ProductService,
+	ProductStorageType,
+	UpdateProductRT,
+	UpdateProductStorageType,
+} from "./product-types";
 
-export class ProductService implements ProductService {
+export class ProductServices implements ProductService {
 	constructor(private logger: Logger) {}
 	async create(product: ProductStorageType) {
 		await productModel.create(product);
@@ -10,5 +15,24 @@ export class ProductService implements ProductService {
 			`message: Product Received; location: product-service; Items: ${product}`,
 		);
 		return;
+	}
+	async update(
+		product: UpdateProductStorageType,
+	): Promise<UpdateProductRT | undefined> {
+		const returnValue: UpdateProductRT | null =
+			await productModel.findOneAndUpdate(
+				{ _id: product.productId },
+				{ $set: product },
+				{ new: true },
+			);
+		return returnValue ? returnValue : undefined;
+	}
+
+	async getProductImage(productId: string): Promise<string | undefined> {
+		const product = await productModel
+			.findById(productId)
+			.select("image")
+			.lean();
+		return product?.image;
 	}
 }
