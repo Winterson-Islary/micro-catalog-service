@@ -3,7 +3,7 @@ import type { UploadedFile } from "express-fileupload";
 import createHttpError from "http-errors";
 import { v4 as uuid } from "uuid";
 import type { Logger } from "winston";
-import { z } from "zod";
+import type { RequestAuth } from "../common/types";
 import type { FileStorage, TUploadReturn } from "../common/types/buckets";
 import type {
 	ProductService,
@@ -63,6 +63,20 @@ export class ProductController {
 				tenantId,
 				isPublished,
 			} = req.body.productInput;
+			const product = await this.productService.getProduct(productId);
+			if (!product) {
+				throw new Error(
+					`product with id: ${productId} could not be found`,
+				);
+			}
+			const _tenantId = (req as RequestAuth).auth.tenantId;
+			if (product.tenantId !== _tenantId) {
+				throw createHttpError(
+					403,
+					"you don't have sufficient permission",
+				);
+			}
+
 			let newImageName: string | undefined;
 			const newImage = image as UploadedFile;
 			if (newImage) {
