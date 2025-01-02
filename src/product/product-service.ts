@@ -1,6 +1,7 @@
 import type { Logger } from "winston";
 import productModel from "./product-model";
 import type {
+	GetProductRT,
 	ProductService,
 	ProductStorageType,
 	UpdateProductRT,
@@ -26,6 +27,13 @@ export class ProductServices implements ProductService {
 				{ new: true },
 			);
 		return returnValue ? returnValue : undefined;
+	}
+
+	async getProduct(productId: string): Promise<GetProductRT | undefined> {
+		const product: GetProductRT | null = await productModel.findOne({
+			_id: productId,
+		});
+		return product ? product : undefined;
 	}
 
 	async getProductImage(productId: string): Promise<string | undefined> {

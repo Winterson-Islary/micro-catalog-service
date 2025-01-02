@@ -2,12 +2,14 @@ import type { Document } from "mongoose";
 import { z } from "zod";
 
 export interface UpdateProductRT extends Document, ProductStorageType {}
+export interface GetProductRT extends Document, ProductStorageType {}
 export interface ProductService {
 	create(product: ProductStorageType): Promise<void>;
 	update(
 		product: UpdateProductStorageType,
 	): Promise<UpdateProductRT | undefined>;
 	getProductImage(productId: string): Promise<string | undefined>;
+	getProduct(productId: string): Promise<GetProductRT | undefined>;
 }
 
 const UploadedFileSchema = z.object({
