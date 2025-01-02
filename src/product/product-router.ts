@@ -1,7 +1,8 @@
 import { Router } from "express";
-import fileUpload from "express-fileupload";
-import createHttpError from "http-errors";
+import authenticate from "../common/middleware/authenticate";
+import { CanAccess } from "../common/middleware/canAccess";
 import { CloudinaryStorage } from "../common/services/Cloudinary";
+import { Roles } from "../common/types";
 import asyncWrapper from "../common/utils/asyncWrapper";
 import logger from "../config/logger";
 import { ProductController } from "./product-controller";
@@ -17,9 +18,17 @@ const productController = new ProductController(
 	cloudinaryService,
 );
 
-router.post("/", ProductValidator, asyncWrapper(productController.create));
+router.post(
+	"/",
+	authenticate,
+	CanAccess([Roles.ADMIN, Roles.MANAGER]),
+	ProductValidator,
+	asyncWrapper(productController.create),
+);
 router.put(
 	"/:productId",
+	authenticate,
+	CanAccess([Roles.ADMIN, Roles.MANAGER]),
 	UpdateProductValidator,
 	asyncWrapper(productController.update),
 );
