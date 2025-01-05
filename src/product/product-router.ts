@@ -18,6 +18,7 @@ const productController = new ProductController(
 	cloudinaryService,
 );
 
+router.get("/", asyncWrapper(productController.getAllProducts));
 router.post(
 	"/",
 	authenticate,
