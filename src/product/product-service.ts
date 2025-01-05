@@ -2,6 +2,7 @@ import type { Logger } from "winston";
 import productModel from "./product-model";
 import type {
 	GetProductRT,
+	ProductFilter,
 	ProductService,
 	ProductStorageType,
 	UpdateProductRT,
@@ -42,5 +43,27 @@ export class ProductServices implements ProductService {
 			.select("image")
 			.lean();
 		return product?.image;
+	}
+
+	async getAllProducts(
+		searchString: string,
+		filters: ProductFilter,
+	): Promise<GetProductRT[] | undefined> {
+		const searchStringRegex = new RegExp(searchString, "i");
+
+		const matchQuery = {
+			...filters,
+			name: searchStringRegex,
+		};
+
+		const aggregate = productModel.aggregate([
+			{
+				$match: matchQuery,
+			},
+		]);
+
+		/* const result: GetProductRT[] = await aggregate.exec(); */ //! Remove in production. (solely for debugging)
+
+		return await aggregate.exec();
 	}
 }
