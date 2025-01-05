@@ -1,4 +1,5 @@
 import type { Document } from "mongoose";
+import type mongoose from "mongoose";
 import { z } from "zod";
 
 export interface UpdateProductRT extends Document, ProductStorageType {}
@@ -10,6 +11,10 @@ export interface ProductService {
 	): Promise<UpdateProductRT | undefined>;
 	getProductImage(productId: string): Promise<string | undefined>;
 	getProduct(productId: string): Promise<GetProductRT | undefined>;
+	getAllProducts(
+		searchString: string,
+		filters: ProductFilter,
+	): Promise<GetProductRT[] | undefined>;
 }
 
 const UploadedFileSchema = z.object({
@@ -118,3 +123,9 @@ export type UpdateProductType = z.infer<typeof UpdateProductSchema>;
 export type ProductStorageType = z.infer<typeof ProductStorageSchema>;
 export type ProductTypes = z.infer<typeof ProductValidatorSchema>;
 export type UploadedFileType = z.infer<typeof UploadedFileSchema>;
+
+export type ProductFilter = {
+	tenantId?: string;
+	categoryId?: mongoose.Types.ObjectId;
+	isPublished?: boolean;
+};
