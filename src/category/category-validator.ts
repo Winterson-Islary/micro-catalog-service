@@ -2,7 +2,6 @@ import type { NextFunction, Request, Response } from "express";
 import createHttpError from "http-errors";
 import { Types } from "mongoose";
 import { z } from "zod";
-import logger from "../config/logger";
 import {
 	type CategoryTypes,
 	CategoryValidatorSchema,
@@ -11,7 +10,7 @@ import {
 
 export const CategoryValidator = async (
 	req: Request,
-	res: Response,
+	_res: Response,
 	next: NextFunction,
 ) => {
 	try {
