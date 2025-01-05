@@ -1,11 +1,14 @@
 import type { NextFunction, Request, Response } from "express";
 import type { UploadedFile } from "express-fileupload";
 import createHttpError from "http-errors";
+import { Types } from "mongoose";
 import { v4 as uuid } from "uuid";
 import type { Logger } from "winston";
 import { type RequestAuth, Roles } from "../common/types";
 import type { FileStorage, TUploadReturn } from "../common/types/buckets";
 import type {
+	GetProductRT,
+	ProductFilter,
 	ProductService,
 	ProductTypes,
 	UpdateProductRT,
@@ -45,7 +48,36 @@ export class ProductController {
 			});
 		} catch (error) {
 			this.logger.error(
-				`{error: ${error}}, location: 'product-controller'`,
+				`{error: ${error}; location: 'product-controller'}`,
+			);
+			throw error;
+		}
+	}
+
+	async getAllProducts(req: Request, res: Response, _next: NextFunction) {
+		try {
+			const { searchString, tenantId, categoryId, isPublished } =
+				req.query;
+			const filters: ProductFilter = {};
+			if (isPublished === "true") {
+				filters.isPublished = true;
+			}
+			if (tenantId) filters.tenantId = tenantId as string;
+			if (categoryId && Types.ObjectId.isValid(categoryId as string)) {
+				filters.categoryId = new Types.ObjectId(categoryId as string);
+			}
+
+			const result: GetProductRT[] | undefined =
+				await this.productService.getAllProducts(
+					String(searchString),
+					filters,
+				);
+
+			this.logger.info(`Listing Products: ${result}`); //! display result array (remove in production)
+			res.status(200).json({});
+		} catch (error) {
+			this.logger.error(
+				`{error: ${error}; location: 'product-controller'}`,
 			);
 			throw error;
 		}
