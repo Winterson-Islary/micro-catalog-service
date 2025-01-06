@@ -22,6 +22,7 @@ export class ProductController {
 	) {
 		this.create = this.create.bind(this);
 		this.update = this.update.bind(this);
+		this.getAllProducts = this.getAllProducts.bind(this);
 	}
 	async create(req: Request, res: Response, _next: NextFunction) {
 		try {
@@ -59,6 +60,7 @@ export class ProductController {
 			const { searchString, tenantId, categoryId, isPublished } =
 				req.query;
 			const filters: ProductFilter = {};
+			const searchQuery = searchString ? String(searchString) : "";
 			if (isPublished === "true") {
 				filters.isPublished = true;
 			}
@@ -68,13 +70,10 @@ export class ProductController {
 			}
 
 			const result: GetProductRT[] | undefined =
-				await this.productService.getAllProducts(
-					String(searchString),
-					filters,
-				);
+				await this.productService.getAllProducts(searchQuery, filters);
 
 			this.logger.info(`Listing Products: ${result}`); //! display result array (remove in production)
-			res.status(200).json({});
+			res.status(200).json({ products: result });
 		} catch (error) {
 			this.logger.error(
 				`{error: ${error}; location: 'product-controller'}`,
