@@ -60,10 +60,31 @@ export class ProductServices implements ProductService {
 			{
 				$match: matchQuery,
 			},
+			//!/* Fix connection with category by including categoryId to the schema, then uncomment */
+			// {
+			// 	$lookup: {
+			// 		from: "categories",
+			// 		localField: "categoryId",
+			// 		foreignField: "_id",
+			// 		as: "category",
+			// 		pipeline: [
+			// 			{
+			// 				$project: {
+			// 					_id: 1,
+			// 					name: 1,
+			// 					attributes: 1,
+			// 					priceConfiguration: 1,
+			// 				},
+			// 			},
+			// 		],
+			// 	},
+			// },
+			// {
+			// 	$unwind: "$category",
+			// },
 		]);
 
-		/* const result: GetProductRT[] = await aggregate.exec(); */ //! Remove in production. (solely for debugging)
-
+		// const result: GetProductRT[] = await aggregate.exec(); //! Remove in production. (solely for debugging)
 		return await aggregate.exec();
 	}
 }
