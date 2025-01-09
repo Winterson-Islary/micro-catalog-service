@@ -1,4 +1,4 @@
-import type { Document } from "mongoose";
+import type { AggregatePaginateResult, Document } from "mongoose";
 import type mongoose from "mongoose";
 import { z } from "zod";
 
@@ -14,7 +14,8 @@ export interface ProductService {
 	getAllProducts(
 		searchString: string,
 		filters: ProductFilter,
-	): Promise<GetProductRT[] | undefined>;
+		paginateQuery: PaginateQuery,
+	): Promise<AggregatePaginateResult<GetProductRT> | undefined>;
 }
 
 const UploadedFileSchema = z.object({
@@ -128,4 +129,9 @@ export type ProductFilter = {
 	tenantId?: string;
 	categoryId?: mongoose.Types.ObjectId;
 	isPublished?: boolean;
+};
+
+export type PaginateQuery = {
+	page: number;
+	limit: number;
 };
