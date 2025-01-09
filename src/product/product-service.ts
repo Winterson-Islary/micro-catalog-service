@@ -1,7 +1,9 @@
+import type { AggregatePaginateResult } from "mongoose";
 import type { Logger } from "winston";
 import productModel from "./product-model";
 import type {
 	GetProductRT,
+	PaginateQuery,
 	ProductFilter,
 	ProductService,
 	ProductStorageType,
@@ -41,14 +43,15 @@ export class ProductServices implements ProductService {
 		const product = await productModel
 			.findById(productId)
 			.select("image")
-			.lean();
+			.lean<{ image: string }>();
 		return product?.image;
 	}
 
 	async getAllProducts(
 		searchString: string,
 		filters: ProductFilter,
-	): Promise<GetProductRT[] | undefined> {
+		paginateQuery: PaginateQuery,
+	): Promise<AggregatePaginateResult<GetProductRT> | undefined> {
 		const searchStringRegex = new RegExp(searchString, "i");
 
 		const matchQuery = {
@@ -85,6 +88,7 @@ export class ProductServices implements ProductService {
 		]);
 
 		// const result: GetProductRT[] = await aggregate.exec(); //! Remove in production. (solely for debugging)
-		return await aggregate.exec();
+		// return await aggregate.exec();
+		return productModel.aggregatePaginate(aggregate, { ...paginateQuery });
 	}
 }
