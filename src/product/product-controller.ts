@@ -1,7 +1,7 @@
 import type { NextFunction, Request, Response } from "express";
 import type { UploadedFile } from "express-fileupload";
 import createHttpError from "http-errors";
-import { Types } from "mongoose";
+import { type AggregatePaginateResult, Types } from "mongoose";
 import { v4 as uuid } from "uuid";
 import type { Logger } from "winston";
 import { type RequestAuth, Roles } from "../common/types";
@@ -69,8 +69,15 @@ export class ProductController {
 				filters.categoryId = new Types.ObjectId(categoryId as string);
 			}
 
-			const result: GetProductRT[] | undefined =
-				await this.productService.getAllProducts(searchQuery, filters);
+			const result: AggregatePaginateResult<GetProductRT> | undefined =
+				await this.productService.getAllProducts(searchQuery, filters, {
+					page: req.query.page
+						? Number.parseInt(req.query.page as string)
+						: 1,
+					limit: req.query.limit
+						? Number.parseInt(req.query.limit as string)
+						: 10,
+				});
 
 			this.logger.info(`Listing Products: ${result}`); //! display result array (remove in production)
 			res.status(200).json({ products: result });
@@ -116,7 +123,7 @@ export class ProductController {
 				const oldImage = product.image;
 				newImageName = uuid();
 				await this.Storage.upload({
-					fileName: newImageName,
+					fileName: newImageName ?? uuid(),
 					fileData: newImage.data.buffer,
 				});
 				if (oldImage) {
