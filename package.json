@@ -42,6 +42,7 @@
 		"typescript": "^5.5.4"
 	},
 	"dependencies": {
+		"cloudinary": "^2.5.1",
 		"config": "^3.3.12",
 		"cookie-parser": "^1.4.6",
 		"cors": "^2.8.5",
@@ -54,10 +55,11 @@
 		"jsonwebtoken": "^9.0.2",
 		"jwks-rsa": "^3.1.0",
 		"mongoose": "^8.8.1",
+		"mongoose-aggregate-paginate-v2": "^1.1.2",
 		"pg": "^8.12.0",
 		"reflect-metadata": "^0.2.2",
 		"typeorm": "^0.3.20",
-		"uuid": "^11.0.2",
+		"uuid": "^11.0.4",
 		"winston": "^3.14.2",
 		"zod": "^3.23.8"
 	},
