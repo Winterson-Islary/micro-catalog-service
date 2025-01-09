@@ -1,4 +1,5 @@
 import mongoose from "mongoose";
+import mongooseAggregatePaginate from "mongoose-aggregate-paginate-v2";
 
 const priceConfigurationSchema = new mongoose.Schema({
 	priceType: {
@@ -56,4 +57,5 @@ const productSchema = new mongoose.Schema(
 	{ timestamps: true },
 );
 
+productSchema.plugin(mongooseAggregatePaginate);
 export default mongoose.model("Product", productSchema);
