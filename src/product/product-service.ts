@@ -1,5 +1,6 @@
 import type { AggregatePaginateResult } from "mongoose";
 import type { Logger } from "winston";
+import { PaginationLabels } from "../config/pagination";
 import productModel from "./product-model";
 import type {
 	GetProductRT,
@@ -89,6 +90,9 @@ export class ProductServices implements ProductService {
 
 		// const result: GetProductRT[] = await aggregate.exec(); //! Remove in production. (solely for debugging)
 		// return await aggregate.exec();
-		return productModel.aggregatePaginate(aggregate, { ...paginateQuery });
+		return productModel.aggregatePaginate(aggregate, {
+			...paginateQuery,
+			customLabels: PaginationLabels,
+		});
 	}
 }
