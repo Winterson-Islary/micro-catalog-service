@@ -10,6 +10,7 @@ import type {
 	GetProductRT,
 	ProductFilter,
 	ProductService,
+	ProductStorageType,
 	ProductTypes,
 	UpdateProductRT,
 } from "./product-types";
@@ -80,7 +81,20 @@ export class ProductController {
 				});
 
 			this.logger.info(`Listing Products: ${result}`); //! display result array (remove in production)
-			res.status(200).json({ products: result });
+			const includeImageUrl = (
+				result?.data as unknown as GetProductRT[]
+			).map((product: ProductStorageType) => {
+				return {
+					...product,
+					image: this.Storage.getObjectUrl(product.image),
+				};
+			});
+			res.status(200).json({
+				data: includeImageUrl,
+				total: result?.totalDocs,
+				perPage: result?.limit,
+				curPage: result?.page,
+			});
 		} catch (error) {
 			this.logger.error(
 				`{error: ${error}; location: 'product-controller'}`,

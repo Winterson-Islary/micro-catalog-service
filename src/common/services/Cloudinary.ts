@@ -82,7 +82,7 @@ export class CloudinaryStorage implements FileStorage {
 			);
 		}
 	}
-	async getObjectUrl(_filename: string): Promise<string> {
-		return "";
+	getObjectUrl(filename: string): string {
+		return `https://res.cloudinary.com/${config.get("cloudinary.cloudName")}/image/upload/${config.get("cloudinary.folderName")}/${filename}`;
 	}
 }
